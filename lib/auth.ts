@@ -5,7 +5,7 @@ import { doc, setDoc, getDoc } from "firebase/firestore"
 import { auth, db } from "./firebase"
 import bcrypt from "bcryptjs"
 
-// ✅ Updated: Register a new user
+// Register a new user
 export async function registerUser(name: string, email: string, password: string) {
   try {
     // Validate email format
@@ -34,13 +34,11 @@ export async function registerUser(name: string, email: string, password: string
     await setDoc(doc(db, "users", user.uid), {
       name,
       email,
-      hashedPassword,
+      hashedPassword, // Store hashed password in Firestore
       createdAt: new Date().toISOString(),
     })
 
-    // ✅ This line has been updated:
     return { success: true, message: "User registered successfully", userId: user.uid }
-
   } catch (error: any) {
     return { success: false, message: error.message }
   }
@@ -49,12 +47,16 @@ export async function registerUser(name: string, email: string, password: string
 // Login user
 export async function loginUser(email: string, password: string) {
   try {
+    // Validate inputs
     if (!email || !password) {
       throw new Error("Email and password are required")
     }
 
+    // Sign in with Firebase Auth
     const userCredential = await signInWithEmailAndPassword(auth, email, password)
     const user = userCredential.user
+
+    // Get user data from Firestore
     const userDoc = await getDoc(doc(db, "users", user.uid))
 
     if (!userDoc.exists()) {
@@ -62,6 +64,8 @@ export async function loginUser(email: string, password: string) {
     }
 
     const userData = userDoc.data()
+
+    // Verify password with bcrypt
     const isPasswordValid = await bcrypt.compare(password, userData.hashedPassword)
 
     if (!isPasswordValid) {
