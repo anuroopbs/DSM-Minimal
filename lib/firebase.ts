@@ -1,7 +1,10 @@
-import { initializeApp, getApps, getApp } from "firebase/app"
+"use client"
+
+import { initializeApp } from "firebase/app"
 import { getAuth } from "firebase/auth"
 import { getFirestore } from "firebase/firestore"
 
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDCVYPI3lS2gfBnKzPc0udxMTkhL0jKy8c",
   authDomain: "dublinsportsmentor---minimal.firebaseapp.com",
@@ -12,10 +15,24 @@ const firebaseConfig = {
   measurementId: "G-YCKFV85W5K",
 }
 
-// Initialize Firebase
-const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig)
-const auth = getAuth(app)
-const db = getFirestore(app)
+// Initialize Firebase only on the client side
+let app
+let auth
+let db
+
+// Only initialize Firebase if we're in the browser
+if (typeof window !== "undefined") {
+  try {
+    // Initialize Firebase app
+    app = initializeApp(firebaseConfig)
+
+    // Initialize Firebase services
+    auth = getAuth(app)
+    db = getFirestore(app)
+  } catch (error) {
+    console.error("Firebase initialization error:", error)
+  }
+}
 
 export { app, auth, db }
 

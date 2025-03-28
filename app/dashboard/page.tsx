@@ -6,6 +6,7 @@ import { useAuth } from "@/components/auth-provider"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { logoutUser } from "@/lib/auth"
+import Link from "next/link"
 
 export default function DashboardPage() {
   const { user, loading } = useAuth()
@@ -73,7 +74,9 @@ export default function DashboardPage() {
               <CardDescription>Schedule your next coaching session</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button>Book Now</Button>
+              <Link href="/dashboard/booking">
+                <Button>Book Now</Button>
+              </Link>
             </CardContent>
           </Card>
 
@@ -83,7 +86,9 @@ export default function DashboardPage() {
               <CardDescription>View your current ranking</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button>View Rankings</Button>
+              <Link href="/dashboard/ladder">
+                <Button>View Rankings</Button>
+              </Link>
             </CardContent>
           </Card>
         </div>

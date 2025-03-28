@@ -2,9 +2,8 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 import { onAuthStateChanged } from "firebase/auth"
-import { auth } from "@/lib/firebase"
 import { doc, getDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { auth, db } from "@/lib/firebase"
 
 interface User {
   uid: string
@@ -29,9 +28,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Only run this on the client side
+    if (typeof window === "undefined") return
+
+    // Make sure auth is initialized
+    if (!auth) {
+      console.error("Auth is not initialized")
+      setLoading(false)
+      return
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         try {
+          // Make sure db is initialized
+          if (!db) {
+            console.error("Firestore is not initialized")
+            setUser(null)
+            setLoading(false)
+            return
+          }
+
           const userDoc = await getDoc(doc(db, "users", firebaseUser.uid))
 
           if (userDoc.exists()) {

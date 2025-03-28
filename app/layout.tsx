@@ -1,26 +1,33 @@
+"use client"
+
 import type React from "react"
+
 import "@/app/globals.css"
-import type { Metadata } from "next"
 import { AuthProvider } from "@/components/auth-provider"
 import { ThemeProvider } from "@/components/theme-provider"
-
-export const metadata: Metadata = {
-  title: "Dublin Sports Mentor - Login",
-  description: "Login to Dublin Sports Mentor coaching platform",
-    generator: 'v0.dev'
-}
+import { useEffect, useState } from "react"
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const [mounted, setMounted] = useState(false)
+
+  // Only run on client-side
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+        <title>Dublin Sports Mentor</title>
+        <meta name="description" content="Dublin Sports Mentor coaching platform" />
+      </head>
       <body>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>{mounted ? children : null}</AuthProvider>
         </ThemeProvider>
       </body>
     </html>
@@ -30,3 +37,7 @@ export default function RootLayout({
 
 
 import './globals.css'
+
+export const metadata = {
+      generator: 'v0.dev'
+    };

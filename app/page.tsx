@@ -1,8 +1,23 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { useEffect, useState } from "react"
 
 export default function HomePage() {
+  const [mounted, setMounted] = useState(false)
+
+  // Only run on client-side
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Don't render anything until client-side
+  if (!mounted) {
+    return null
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <header className="py-6 border-b border-gray-100">
