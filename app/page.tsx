@@ -59,7 +59,7 @@ export default function HomePage() {
               <div className="max-w-3xl space-y-6">
                 <h2 className="text-sm uppercase tracking-widest text-gray-500">Our Vision</h2>
                 <h1 className="text-3xl font-bold tracking-tight sm:text-3xl md:text-4xl text-gray-900">
-                  To Inspire 1% of the planet to pick up a racket and play sport.
+                  To Inspire 1% of the planet to pick up a racket and play a sport
                 </h1>
               </div>
 
