@@ -7,17 +7,39 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { logoutUser } from "@/lib/auth"
 import Link from "next/link"
+import { getPlayerProfile } from "@/lib/player-service"
+import { PlayerProfile } from "@/lib/player-types"
 
 export default function DashboardPage() {
   const { user, loading } = useAuth()
   const router = useRouter()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [playerProfile, setPlayerProfile] = useState<PlayerProfile | null>(null)
+  const [profileLoading, setProfileLoading] = useState(true)
 
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login")
     }
+    
+    if (user) {
+      fetchPlayerProfile()
+    }
   }, [user, loading, router])
+
+  const fetchPlayerProfile = async () => {
+    setProfileLoading(true)
+    try {
+      const result = await getPlayerProfile(user.uid)
+      if (result.success) {
+        setPlayerProfile(result.profile)
+      }
+    } catch (error) {
+      console.error("Error fetching player profile:", error)
+    } finally {
+      setProfileLoading(false)
+    }
+  }
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -63,11 +85,24 @@ export default function DashboardPage() {
               <p>
                 <strong>Email:</strong> {user.email}
               </p>
+              {playerProfile && (
+                <>
+                  <p>
+                    <strong>Skill Level:</strong> {playerProfile.skillLevel.charAt(0).toUpperCase() + playerProfile.skillLevel.slice(1)}
+                  </p>
+                  <p>
+                    <strong>Availability:</strong> {playerProfile.availability.map(a => a.charAt(0).toUpperCase() + a.slice(1)).join(", ")}
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {playerProfile.isActive ? "Available for matches" : "Not available for matches"}
+                  </p>
+                </>
+              )}
             </div>
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card>
             <CardHeader>
               <CardTitle>Book a Session</CardTitle>
@@ -92,8 +127,45 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Player Profile</CardTitle>
+              <CardDescription>Manage your player information</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/player-profile">
+                <Button>Edit Profile</Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Find Players</CardTitle>
+              <CardDescription>Browse and challenge other players</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/player-directory">
+                <Button>Find Players</Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Match Requests</CardTitle>
+              <CardDescription>Manage your match requests and schedule</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/matches">
+                <Button>View Matches</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   )
 }
-
