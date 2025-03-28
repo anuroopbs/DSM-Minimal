@@ -46,3 +46,11 @@ function mergeConfig(nextConfig, userConfig) {
 }
 
 export default nextConfig
+
+
+// next.config.mjs
+
+// Because you're using the .mjs extension, export default is the proper syntax.
+export default {
+  output: 'export',
+}
