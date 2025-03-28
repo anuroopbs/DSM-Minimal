@@ -9,7 +9,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyDCVYPI3lS2gfBnKzPc0udxMTkhL0jKy8c",
   authDomain: "dublinsportsmentor---minimal.firebaseapp.com",
   projectId: "dublinsportsmentor---minimal",
-  storageBucket: "dublinsportsmentor---minimal.firebasestorage.app",
+  storageBucket: "dublinsportsmentor---minimal.appspot.com",
   messagingSenderId: "27938496397",
   appId: "1:27938496397:web:07747ea2113f72d58627c4",
   measurementId: "G-YCKFV85W5K",
@@ -35,4 +35,3 @@ if (typeof window !== "undefined") {
 }
 
 export { app, auth, db }
-
