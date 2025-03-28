@@ -27,9 +27,13 @@ export default function RegisterPage() {
   const router = useRouter()
 
   const handleAvailabilityChange = (value: Availability) => {
-    setAvailability(prev =>
-      prev.includes(value) ? prev.filter(item => item !== value) : [...prev, value]
-    )
+    setAvailability(prev => {
+      if (prev.includes(value)) {
+        return prev.filter(item => item !== value)
+      } else {
+        return [...prev, value]
+      }
+    })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,34 +43,43 @@ export default function RegisterPage() {
     setSuccess("")
 
     try {
+      // Validate inputs
       if (availability.length === 0) {
         throw new Error("Please select at least one availability option")
       }
 
+      // Register user with Firebase Auth
       const result = await registerUser(name, email, password)
 
       if (result.success) {
-        // ✅ ✅ ✅ NEW BLOCK
-        const userId = result.userId
-        if (!userId) {
-          throw new Error("User ID not found")
+        // Create player profile in Firestore
+        try {
+          // Check if userId is returned from registerUser
+          const userId = result.userId
+          
+          if (!userId) {
+            throw new Error("User ID not found")
+          }
+
+          await setDoc(doc(db, "playerProfiles", userId), {
+            userId,
+            name,
+            email,
+            skillLevel,
+            availability,
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          })
+
+          setSuccess("Player registered successfully")
+          // Redirect to login page after successful registration
+          setTimeout(() => {
+            router.push("/login")
+          }, 2000)
+        } catch (profileError: any) {
+          setError(`Registration successful but failed to create player profile: ${profileError.message}`)
         }
-
-        await setDoc(doc(db, "playerProfiles", userId), {
-          userId,
-          name,
-          email,
-          skillLevel,
-          availability,
-          isActive: true,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        })
-
-        setSuccess("Player registered successfully")
-        setTimeout(() => {
-          router.push("/login")
-        }, 2000)
       } else {
         setError(result.message)
       }
@@ -91,4 +104,104 @@ export default function RegisterPage() {
             </Alert>
           )}
           {success && (
-            <Alert className="mb-4 bg-green-
+            <Alert className="mb-4 bg-green-50 text-green-800 border-green-200">
+              <AlertDescription>{success}</AlertDescription>
+            </Alert>
+          )}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="m@example.com"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <p className="text-xs text-gray-500">Password must be at least 6 characters</p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label>Skill Level</Label>
+              <RadioGroup 
+                value={skillLevel} 
+                onValueChange={(value) => setSkillLevel(value as SkillLevel)}
+                className="flex flex-col space-y-1"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value={SkillLevel.BEGINNER} id="beginner" />
+                  <Label htmlFor="beginner">Beginner</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value={SkillLevel.INTERMEDIATE} id="intermediate" />
+                  <Label htmlFor="intermediate">Intermediate</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value={SkillLevel.ADVANCED} id="advanced" />
+                  <Label htmlFor="advanced">Advanced</Label>
+                </div>
+              </RadioGroup>
+            </div>
+            
+            <div className="space-y-2">
+              <Label>Availability (select all that apply)</Label>
+              <div className="flex flex-col space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="weekdays" 
+                    checked={availability.includes(Availability.WEEKDAYS)}
+                    onCheckedChange={() => handleAvailabilityChange(Availability.WEEKDAYS)}
+                  />
+                  <Label htmlFor="weekdays">Weekdays</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="weekends" 
+                    checked={availability.includes(Availability.WEEKENDS)}
+                    onCheckedChange={() => handleAvailabilityChange(Availability.WEEKENDS)}
+                  />
+                  <Label htmlFor="weekends">Weekends</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="evenings" 
+                    checked={availability.includes(Availability.EVENINGS)}
+                    onCheckedChange={() => handleAvailabilityChange(Availability.EVENINGS)}
+                  />
+                  <Label htmlFor="evenings">Evenings</Label>
+                </div>
+              </div>
+            </div>
+            
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Creating account..." : "Create player account"}
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter className="flex justify-center">
+          <div className="text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link href="/login" className="text-primary hover:underline">
+              Log in
+            </Link>
+          </div>
+        </CardFooter>
+      </Card>
+    </div>
+  )
+}
