@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next"
 
+export const dynamic = 'force-static'
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Squash Coach",
@@ -11,16 +13,15 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#000000",
     icons: [
       {
-        src: "/icon-192x192.png",
+        src: "/placeholder-logo.png",
         sizes: "192x192",
         type: "image/png",
       },
       {
-        src: "/icon-512x512.png",
+        src: "/placeholder-logo.png",
         sizes: "512x512",
         type: "image/png",
       },
     ],
   }
 }
-

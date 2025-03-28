@@ -1,0 +1,3 @@
+// This file intentionally left empty
+// Static exports don't support middleware
+// Client-side auth will be implemented instead

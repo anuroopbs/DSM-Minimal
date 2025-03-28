@@ -1,11 +1,10 @@
 "use client"
 
-import type React from "react"
-
+import { useEffect, useState } from "react"
 import "@/app/globals.css"
 import { AuthProvider } from "@/components/auth-provider"
 import { ThemeProvider } from "@/components/theme-provider"
-import { useEffect, useState } from "react"
+import ProtectedRouteWrapper from "@/components/protected-route"
 
 export default function RootLayout({
   children,
@@ -28,7 +27,11 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <AuthProvider>{mounted ? children : null}</AuthProvider>
+          <AuthProvider>
+            <ProtectedRouteWrapper>
+              {mounted ? children : null}
+            </ProtectedRouteWrapper>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
