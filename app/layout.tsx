@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import "@/app/globals.css"
 import { AuthProvider } from "@/components/auth-provider"
 import { ThemeProvider } from "@/components/theme-provider"
+import { BackButton } from "@/components/back-button"
 import ProtectedRouteWrapper from "@/components/protected-route"
 
 export default function RootLayout({
@@ -29,7 +30,12 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <AuthProvider>
             <ProtectedRouteWrapper>
-              {mounted ? children : null}
+              {mounted ? (
+                <>
+                  <BackButton />
+                  {children}
+                </>
+              ) : null}
             </ProtectedRouteWrapper>
           </AuthProvider>
         </ThemeProvider>
