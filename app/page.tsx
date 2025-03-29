@@ -77,7 +77,7 @@ export default function HomePage() {
                     </div>
 
                     <div className="p-8 text-center">
-                      <div className="text-5xl font-bold mb-2 text-gray-900 tabular-nums">9.2B</div>
+                      <div className="text-5xl font-bold mb-2 text-gray-900 tabular-nums">81M</div>
                       <p className="text-sm text-gray-500">Remaining to reach 1% of the world</p>
                     </div>
                   </div>
