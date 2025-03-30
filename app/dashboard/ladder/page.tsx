@@ -3,100 +3,92 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { SkillLevel } from "@/lib/player-types"
-import { getAllPlayers } from "@/lib/player-service"
-
-interface PlayerRanking {
-  id: string
-  name: string
-  skillLevel: SkillLevel
-  rank: number
-  matches: number
-  wins: number
-  losses: number
-  points: number
-}
+import { LadderWidget } from "@/components/ladder-widget"
+import { PlayerRegistrationForm } from "@/components/player-registration-form"
+import { SkillFilterWrapper } from "@/components/skill-filter-wrapper"
 
 export default function LadderPage() {
   const [isRegistered, setIsRegistered] = useState(false)
   const [isRegistering, setIsRegistering] = useState(false)
-  const [activeTab, setActiveTab] = useState("mens")
-  const [players, setPlayers] = useState<PlayerRanking[]>([])
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState("mens")
+  const [players, setPlayers] = useState([])
+  const [searchQuery, setSearchQuery] = useState("")
+
+  // Mock data for demonstration
+  const mockPlayers = [
+    {
+      id: "1",
+      name: "John Smith",
+      avatar: "",
+      skillLevel: "intermediate",
+      record: { wins: 8, losses: 2 },
+      movement: "up",
+      gender: "male"
+    },
+    {
+      id: "2",
+      name: "Sarah Johnson",
+      avatar: "",
+      skillLevel: "advanced",
+      record: { wins: 12, losses: 3 },
+      movement: "none",
+      gender: "female"
+    },
+    {
+      id: "3",
+      name: "Michael Brown",
+      avatar: "",
+      skillLevel: "beginner",
+      record: { wins: 3, losses: 5 },
+      movement: "down",
+      gender: "male"
+    },
+    {
+      id: "4",
+      name: "Emma Wilson",
+      avatar: "",
+      skillLevel: "intermediate",
+      record: { wins: 6, losses: 4 },
+      movement: "up",
+      gender: "female"
+    },
+    {
+      id: "5",
+      name: "David Lee",
+      avatar: "",
+      skillLevel: "advanced",
+      record: { wins: 15, losses: 2 },
+      movement: "up",
+      gender: "male"
+    }
+  ]
+
+  useEffect(() => {
+    // Simulate loading data
+    const timer = setTimeout(() => {
+      setPlayers(mockPlayers)
+      setLoading(false)
+      
+      // Check if user is registered (would normally come from auth/database)
+      const userRegistered = localStorage.getItem("ladderRegistered") === "true"
+      setIsRegistered(userRegistered)
+    }, 1000)
+    
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleRegister = () => {
     setIsRegistering(true)
     // Simulate registration process
     setTimeout(() => {
-      setIsRegistering(false)
       setIsRegistered(true)
+      setIsRegistering(false)
+      localStorage.setItem("ladderRegistered", "true")
     }, 1500)
   }
-
-  useEffect(() => {
-    const fetchPlayers = async () => {
-      const result = await getAllPlayers()
-      if (result.success) {
-        const rankedPlayers = result.players.map((player, index) => ({
-          id: player.userId,
-          name: player.name,
-          skillLevel: player.skillLevel,
-          rank: index + 1,
-          matches: 0,
-          wins: 0,
-          losses: 0,
-          points: 100 - (index * 5)
-        }))
-        setPlayers(rankedPlayers)
-      }
-      setLoading(false)
-    }
-    fetchPlayers()
-  }, [])
-
-  const renderLadder = (players: PlayerRanking[]) => (
-    <div className="space-y-4">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b">
-              <th className="text-left py-3 px-4">Rank</th>
-              <th className="text-left py-3 px-4">Player</th>
-              <th className="text-center py-3 px-4">Division</th>
-              <th className="text-center py-3 px-4">Matches</th>
-              <th className="text-center py-3 px-4">W/L</th>
-              <th className="text-center py-3 px-4">Points</th>
-              <th className="text-right py-3 px-4">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {players.map((player) => (
-              <tr key={player.id} className="border-b hover:bg-gray-50">
-                <td className="py-4 px-4 font-medium">#{player.rank}</td>
-                <td className="py-4 px-4">{player.name}</td>
-                <td className="py-4 px-4 text-center">
-                  <Badge variant="outline">
-                    {player.skillLevel.replace("_", " ")}
-                  </Badge>
-                </td>
-                <td className="py-4 px-4 text-center">{player.matches}</td>
-                <td className="py-4 px-4 text-center">{player.wins}/{player.losses}</td>
-                <td className="py-4 px-4 text-center">{player.points}</td>
-                <td className="py-4 px-4 text-right">
-                  <Button variant="outline" size="sm">
-                    Challenge
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -129,7 +121,7 @@ export default function LadderPage() {
           <h1 className="text-3xl font-bold mb-2">Ladder Rankings</h1>
           <p className="text-muted-foreground">Compete with other players and climb the rankings</p>
         </div>
-
+        
         {!isRegistered && (
           <Card className="mb-8">
             <CardHeader>
@@ -137,19 +129,14 @@ export default function LadderPage() {
               <CardDescription>Register to participate in our ladder ranking system</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <p>
-                  Our ladder ranking system allows you to challenge other players and track your progress. Register now
-                  to start competing and improving your skills.
-                </p>
-                <Button onClick={handleRegister} disabled={isRegistering}>
-                  {isRegistering ? "Registering..." : "Register for Ladder"}
-                </Button>
-              </div>
+              <PlayerRegistrationForm 
+                onRegister={handleRegister} 
+                isRegistering={isRegistering}
+              />
             </CardContent>
           </Card>
         )}
-
+        
         {isRegistered && (
           <Card className="mb-8 border-green-200 bg-green-50 dark:bg-green-950 dark:border-green-800">
             <CardHeader>
@@ -182,25 +169,38 @@ export default function LadderPage() {
           </Card>
         )}
 
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold">Current Rankings</h2>
+          <SkillFilterWrapper />
+        </div>
+        
         <Tabs defaultValue="mens" className="w-full" onValueChange={setActiveTab}>
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
             <TabsTrigger value="mens">Men's Ladder</TabsTrigger>
             <TabsTrigger value="womens">Women's Ladder</TabsTrigger>
           </TabsList>
-
           <TabsContent value="mens">
             {loading ? (
               <div className="text-center py-8">Loading rankings...</div>
             ) : (
-              renderLadder(players.filter(p => true))
+              <LadderWidget 
+                players={players.filter(p => p.gender === "male")}
+                showSkillLevel={true}
+                showChallengeButtons={isRegistered}
+                maxPlayers={20}
+              />
             )}
           </TabsContent>
-
           <TabsContent value="womens">
             {loading ? (
               <div className="text-center py-8">Loading rankings...</div>
             ) : (
-              renderLadder(players.filter(p => true))
+              <LadderWidget 
+                players={players.filter(p => p.gender === "female")}
+                showSkillLevel={true}
+                showChallengeButtons={isRegistered}
+                maxPlayers={20}
+              />
             )}
           </TabsContent>
         </Tabs>
