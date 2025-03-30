@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -22,12 +23,11 @@ export default function ChallengePage({ params }: ChallengePageProps) {
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [message, setMessage] = useState("")
 
-  // Mock data for demonstration
   const mockPlayer = {
     id: params.id,
     name: params.id === "1" ? "John Smith" : "Sarah Johnson",
     avatar: "",
-    skillLevel: params.id === "1" ? "intermediate" : "advanced",
+    skillLevel: params.id === "1" ? "intermediate" : "advanced", 
     record: { wins: params.id === "1" ? 8 : 12, losses: params.id === "1" ? 2 : 3 },
     movement: params.id === "1" ? "up" : "none",
     gender: params.id === "1" ? "male" : "female"
@@ -38,14 +38,14 @@ export default function ChallengePage({ params }: ChallengePageProps) {
       setPlayer(mockPlayer)
       setLoading(false)
     }, 1000)
-
+    
     return () => clearTimeout(timer)
   }, [params.id])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitting(true)
-
+    
     setTimeout(() => {
       setSubmitting(false)
       router.push("/dashboard/ladder?challenge=success")
@@ -66,7 +66,7 @@ export default function ChallengePage({ params }: ChallengePageProps) {
   return (
     <div className="container py-8">
       <BackButton href="/dashboard/ladder" />
-
+      
       <div className="max-w-2xl mx-auto mt-6">
         <Card>
           <CardHeader>
@@ -89,7 +89,7 @@ export default function ChallengePage({ params }: ChallengePageProps) {
                 </p>
               </div>
             </div>
-
+            
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Proposed Dates</label>
@@ -110,7 +110,7 @@ export default function ChallengePage({ params }: ChallengePageProps) {
                   ))}
                 </div>
               </div>
-
+              
               <div className="space-y-2">
                 <label className="text-sm font-medium">Proposed Times</label>
                 <div className="grid grid-cols-3 gap-2">
@@ -127,7 +127,7 @@ export default function ChallengePage({ params }: ChallengePageProps) {
                   ))}
                 </div>
               </div>
-
+              
               <div className="space-y-2">
                 <label htmlFor="message" className="text-sm font-medium">Message (Optional)</label>
                 <textarea
@@ -138,7 +138,7 @@ export default function ChallengePage({ params }: ChallengePageProps) {
                   className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm"
                 />
               </div>
-
+              
               <Button type="submit" className="w-full" disabled={!selectedDate || !selectedTime || submitting}>
                 {submitting ? "Sending Challenge..." : "Send Challenge Request"}
               </Button>
