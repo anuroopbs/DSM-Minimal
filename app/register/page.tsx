@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { registerUser } from "@/lib/auth"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Checkbox } from "@/components/ui/checkbox"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { SkillLevel, Availability, SkillLevelDescriptions } from "@/lib/player-types"
 import { doc, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
@@ -178,17 +178,21 @@ export default function RegisterPage() {
             
             <div className="space-y-2">
               <Label>Skill Level</Label>
-              <RadioGroup 
-                value={skillLevel} 
-                onValueChange={(value) => setSkillLevel(value as SkillLevel)}
-                className="flex flex-col space-y-3"
-              >
-                {Object.entries(SkillLevelDescriptions).map(([level, description]) => (
-                  <div key={level} className="flex items-start space-x-2 p-2 rounded hover:bg-gray-50">
-                    <RadioGroupItem value={level} id={level} />
-                    <div>
-                      <Label htmlFor={level} className="font-medium">
-                        {level.replace('_', ' ').toUpperCase()}
+              <Select value={skillLevel} onValueChange={(value) => setSkillLevel(value as SkillLevel)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select your skill level" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(SkillLevelDescriptions).map(([level, description]) => (
+                    <SelectItem key={level} value={level}>
+                      <div className="flex flex-col">
+                        <span className="font-medium">{level.replace('_', ' ').toUpperCase()}</span>
+                        <span className="text-sm text-gray-500">{description}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
                       </Label>
                       <p className="text-sm text-gray-600 mt-1">{description}</p>
                     </div>
