@@ -1,3 +1,14 @@
+
+export async function generateStaticParams() {
+  // Generate an array of possible IDs that this dynamic route can handle
+  return [
+    { id: '1' },
+    { id: '2' },
+    { id: '3' },
+    // Add more IDs as needed
+  ]
+}
+
 "use client"
 
 import { useState, useEffect } from "react"

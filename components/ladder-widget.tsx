@@ -27,13 +27,13 @@ interface LadderWidgetProps {
   showSkillLevel?: boolean
 }
 
-const LadderWidget = ({
+export function LadderWidget({
   title = "Ladder Rankings",
   showHeader = true,
   limit = 5,
   showChallengeButtons = false,
   showSkillLevel = true,
-}: LadderWidgetProps) => {
+}: LadderWidgetProps) {
   // Sample data - in a real implementation, this would come from an API or database
   const malePlayers: Player[] = [
     {
@@ -263,4 +263,4 @@ const LadderWidget = ({
 
 import { LadderWidget as UI_LadderWidget } from "./ui/ladder-widget"
 export { UI_LadderWidget }
-export default LadderWidget
+export { LadderWidget }

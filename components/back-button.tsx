@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft } from "lucide-react"
 
-export function BackButton() {
+export { BackButton }() {
   const router = useRouter()
   const pathname = usePathname()
   
