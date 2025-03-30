@@ -1,14 +1,31 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
+import { SkillLevel } from "@/lib/player-types"
+import { getAllPlayers } from "@/lib/player-service"
+
+interface PlayerRanking {
+  id: string
+  name: string
+  skillLevel: SkillLevel
+  rank: number
+  matches: number
+  wins: number
+  losses: number
+  points: number
+}
 
 export default function LadderPage() {
   const [isRegistered, setIsRegistered] = useState(false)
   const [isRegistering, setIsRegistering] = useState(false)
+  const [activeTab, setActiveTab] = useState("mens")
+  const [players, setPlayers] = useState<PlayerRanking[]>([])
+  const [loading, setLoading] = useState(true)
 
   const handleRegister = () => {
     setIsRegistering(true)
@@ -19,24 +36,67 @@ export default function LadderPage() {
     }, 1500)
   }
 
-  // Mock data for ladder rankings
-  const malePlayers = Array.from({ length: 10 }, (_, i) => ({
-    id: `m${i + 1}`,
-    name: `John Player ${i + 1}`,
-    matches: 20 - i,
-    wins: 15 - i,
-    losses: 5,
-    points: 100 - i * 5,
-  }))
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      const result = await getAllPlayers()
+      if (result.success) {
+        const rankedPlayers = result.players.map((player, index) => ({
+          id: player.userId,
+          name: player.name,
+          skillLevel: player.skillLevel,
+          rank: index + 1,
+          matches: 0,
+          wins: 0,
+          losses: 0,
+          points: 100 - (index * 5)
+        }))
+        setPlayers(rankedPlayers)
+      }
+      setLoading(false)
+    }
+    fetchPlayers()
+  }, [])
 
-  const femalePlayers = Array.from({ length: 10 }, (_, i) => ({
-    id: `f${i + 1}`,
-    name: `Jane Player ${i + 1}`,
-    matches: 18 - i,
-    wins: 14 - i,
-    losses: 4,
-    points: 95 - i * 5,
-  }))
+  const renderLadder = (players: PlayerRanking[]) => (
+    <div className="space-y-4">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b">
+              <th className="text-left py-3 px-4">Rank</th>
+              <th className="text-left py-3 px-4">Player</th>
+              <th className="text-center py-3 px-4">Division</th>
+              <th className="text-center py-3 px-4">Matches</th>
+              <th className="text-center py-3 px-4">W/L</th>
+              <th className="text-center py-3 px-4">Points</th>
+              <th className="text-right py-3 px-4">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {players.map((player) => (
+              <tr key={player.id} className="border-b hover:bg-gray-50">
+                <td className="py-4 px-4 font-medium">#{player.rank}</td>
+                <td className="py-4 px-4">{player.name}</td>
+                <td className="py-4 px-4 text-center">
+                  <Badge variant="outline">
+                    {player.skillLevel.replace("_", " ")}
+                  </Badge>
+                </td>
+                <td className="py-4 px-4 text-center">{player.matches}</td>
+                <td className="py-4 px-4 text-center">{player.wins}/{player.losses}</td>
+                <td className="py-4 px-4 text-center">{player.points}</td>
+                <td className="py-4 px-4 text-right">
+                  <Button variant="outline" size="sm">
+                    Challenge
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -122,102 +182,26 @@ export default function LadderPage() {
           </Card>
         )}
 
-        <Tabs defaultValue="male" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="male">Men's Ladder</TabsTrigger>
-            <TabsTrigger value="female">Women's Ladder</TabsTrigger>
+        <Tabs defaultValue="mens" className="w-full" onValueChange={setActiveTab}>
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+            <TabsTrigger value="mens">Men's Ladder</TabsTrigger>
+            <TabsTrigger value="womens">Women's Ladder</TabsTrigger>
           </TabsList>
-          <TabsContent value="male">
-            <Card>
-              <CardHeader>
-                <CardTitle>Men's Ladder Rankings</CardTitle>
-                <CardDescription>Current standings in the men's ladder</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left py-3 px-2">Rank</th>
-                        <th className="text-left py-3 px-2">Player</th>
-                        <th className="text-center py-3 px-2">Matches</th>
-                        <th className="text-center py-3 px-2">W/L</th>
-                        <th className="text-center py-3 px-2">Points</th>
-                        <th className="text-right py-3 px-2">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {malePlayers.map((player, index) => (
-                        <tr key={player.id} className="border-b last:border-0">
-                          <td className="py-3 px-2 font-medium">{index + 1}</td>
-                          <td className="py-3 px-2">
-                            <div className="flex items-center gap-2">
-                              <span>{player.name}</span>
-                            </div>
-                          </td>
-                          <td className="text-center py-3 px-2">{player.matches}</td>
-                          <td className="text-center py-3 px-2">
-                            {player.wins}/{player.losses}
-                          </td>
-                          <td className="text-center py-3 px-2">{player.points}</td>
-                          <td className="text-right py-3 px-2">
-                            <Button variant="outline" size="sm" disabled={!isRegistered}>
-                              Challenge
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
+
+          <TabsContent value="mens">
+            {loading ? (
+              <div className="text-center py-8">Loading rankings...</div>
+            ) : (
+              renderLadder(players.filter(p => true))
+            )}
           </TabsContent>
-          <TabsContent value="female">
-            <Card>
-              <CardHeader>
-                <CardTitle>Women's Ladder Rankings</CardTitle>
-                <CardDescription>Current standings in the women's ladder</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left py-3 px-2">Rank</th>
-                        <th className="text-left py-3 px-2">Player</th>
-                        <th className="text-center py-3 px-2">Matches</th>
-                        <th className="text-center py-3 px-2">W/L</th>
-                        <th className="text-center py-3 px-2">Points</th>
-                        <th className="text-right py-3 px-2">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {femalePlayers.map((player, index) => (
-                        <tr key={player.id} className="border-b last:border-0">
-                          <td className="py-3 px-2 font-medium">{index + 1}</td>
-                          <td className="py-3 px-2">
-                            <div className="flex items-center gap-2">
-                              <span>{player.name}</span>
-                            </div>
-                          </td>
-                          <td className="text-center py-3 px-2">{player.matches}</td>
-                          <td className="text-center py-3 px-2">
-                            {player.wins}/{player.losses}
-                          </td>
-                          <td className="text-center py-3 px-2">{player.points}</td>
-                          <td className="text-right py-3 px-2">
-                            <Button variant="outline" size="sm" disabled={!isRegistered}>
-                              Challenge
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
+
+          <TabsContent value="womens">
+            {loading ? (
+              <div className="text-center py-8">Loading rankings...</div>
+            ) : (
+              renderLadder(players.filter(p => true))
+            )}
           </TabsContent>
         </Tabs>
       </main>
@@ -226,71 +210,6 @@ export default function LadderPage() {
           &copy; {new Date().getFullYear()} Squash Coach. All rights reserved.
         </div>
       </footer>
-    </div>
-  )
-}
-
-"use client"
-
-import { useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { SkillLevel } from "@/lib/player-types"
-
-export default function LadderPage() {
-  const [activeTab, setActiveTab] = useState("mens")
-
-  const mockPlayers = [
-    { id: 1, name: "John Doe", skillLevel: SkillLevel.DIVISION_1, rank: 1 },
-    { id: 2, name: "Jane Smith", skillLevel: SkillLevel.DIVISION_2, rank: 2 },
-    { id: 3, name: "Mike Johnson", skillLevel: SkillLevel.DIVISION_3, rank: 3 },
-  ]
-
-  const renderLadder = (players: typeof mockPlayers) => (
-    <div className="space-y-4">
-      {players.map((player) => (
-        <Card key={player.id} className="hover:bg-gray-50">
-          <CardContent className="flex items-center justify-between p-4">
-            <div className="flex items-center space-x-4">
-              <span className="text-2xl font-bold text-gray-400">#{player.rank}</span>
-              <div>
-                <h3 className="font-semibold">{player.name}</h3>
-                <Badge variant="outline">
-                  {player.skillLevel.replace("_", " ")}
-                </Badge>
-              </div>
-            </div>
-            <Button variant="outline" size="sm">
-              Challenge
-            </Button>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  )
-
-  return (
-    <div className="container mx-auto p-6">
-      <CardHeader className="text-center mb-6">
-        <CardTitle className="text-3xl">Squash Ladder Rankings</CardTitle>
-      </CardHeader>
-
-      <Tabs defaultValue="mens" className="w-full" onValueChange={setActiveTab}>
-        <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
-          <TabsTrigger value="mens">Men's Ladder</TabsTrigger>
-          <TabsTrigger value="womens">Women's Ladder</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="mens">
-          {renderLadder(mockPlayers)}
-        </TabsContent>
-        
-        <TabsContent value="womens">
-          {renderLadder(mockPlayers.slice(1))}
-        </TabsContent>
-      </Tabs>
     </div>
   )
 }
