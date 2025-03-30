@@ -1,14 +1,4 @@
 
-export async function generateStaticParams() {
-  // Generate an array of possible IDs that this dynamic route can handle
-  return [
-    { id: '1' },
-    { id: '2' },
-    { id: '3' },
-    // Add more IDs as needed
-  ]
-}
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -17,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SkillLevelBadge } from "@/components/skill-level-badge"
-import { ArrowLeft } from "lucide-react"
 import { BackButton } from "@/components/back-button"
 
 export default function ChallengePage({ params }: { params: { id: string } }) {
@@ -41,7 +30,6 @@ export default function ChallengePage({ params }: { params: { id: string } }) {
   }
 
   useEffect(() => {
-    // Simulate loading data
     const timer = setTimeout(() => {
       setPlayer(mockPlayer)
       setLoading(false)
@@ -54,7 +42,6 @@ export default function ChallengePage({ params }: { params: { id: string } }) {
     e.preventDefault()
     setSubmitting(true)
     
-    // Simulate submission
     setTimeout(() => {
       setSubmitting(false)
       router.push("/dashboard/ladder?challenge=success")
