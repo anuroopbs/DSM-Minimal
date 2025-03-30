@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -82,6 +81,11 @@ export default function LoginPage() {
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign in"}
             </Button>
+          <div className="text-center mt-2">
+            <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+              Forgot password?
+            </Link>
+          </div>
           </form>
         </CardContent>
         <CardFooter className="justify-center">
