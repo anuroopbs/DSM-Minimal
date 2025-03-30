@@ -9,7 +9,6 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { registerUser } from "@/lib/auth"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { SkillLevel, Availability, SkillLevelDescriptions } from "@/lib/player-types"
 import { doc, setDoc } from "firebase/firestore"
@@ -27,16 +26,6 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState("")
   const router = useRouter()
 
-  const handleAvailabilityChange = (value: Availability) => {
-    setAvailability(prev => {
-      if (prev.includes(value)) {
-        return prev.filter(item => item !== value)
-      } else {
-        return [...prev, value]
-      }
-    })
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -44,37 +33,9 @@ export default function RegisterPage() {
     setSuccess("")
 
     try {
-      // Validate inputs
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(email)) {
-        throw new Error("Please enter a valid email address")
-      }
-
-      // Validate password
-      if (password.length < 8) {
-        throw new Error("Password must be at least 8 characters long")
-      }
-      if (!/[A-Z]/.test(password)) {
-        throw new Error("Password must contain at least one uppercase letter")
-      }
-      if (!/[a-z]/.test(password)) {
-        throw new Error("Password must contain at least one lowercase letter")
-      }
-      if (!/[0-9]/.test(password)) {
-        throw new Error("Password must contain at least one number")
-      }
-      if (!/[!@#$%^&*]/.test(password)) {
-        throw new Error("Password must contain at least one special character (!@#$%^&*)")
-      }
-
-      // Validate password confirmation
+      // Validate password match
       if (password !== confirmPassword) {
         throw new Error("Passwords do not match")
-      }
-
-      if (availability.length === 0) {
-        throw new Error("Please select at least one availability option")
       }
 
       // Register user with Firebase Auth
@@ -83,9 +44,8 @@ export default function RegisterPage() {
       if (result.success) {
         // Create player profile in Firestore
         try {
-          // Check if userId is returned from registerUser
           const userId = result.userId
-          
+
           if (!userId) {
             throw new Error("User ID not found")
           }
@@ -102,7 +62,6 @@ export default function RegisterPage() {
           })
 
           setSuccess("Player registered successfully")
-          // Redirect to login page after successful registration
           setTimeout(() => {
             router.push("/login")
           }, 2000)
@@ -124,24 +83,20 @@ export default function RegisterPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold">Create a player account</CardTitle>
-          <CardDescription>Enter your information to join the squash community</CardDescription>
+          <CardDescription>Enter your details to register</CardDescription>
         </CardHeader>
         <CardContent>
-          {error && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-          {success && (
-            <Alert className="mb-4 bg-green-50 text-green-800 border-green-200">
-              <AlertDescription>{success}</AlertDescription>
-            </Alert>
-          )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -149,10 +104,10 @@ export default function RegisterPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="m@example.com"
                 required
               />
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
@@ -175,7 +130,7 @@ export default function RegisterPage() {
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label>Skill Level</Label>
               <Select value={skillLevel} onValueChange={(value) => setSkillLevel(value as SkillLevel)}>
@@ -193,56 +148,32 @@ export default function RegisterPage() {
                   ))}
                 </SelectContent>
               </Select>
-                      </Label>
-                      <p className="text-sm text-gray-600 mt-1">{description}</p>
-                    </div>
-                  </div>
-                ))}
-              </RadioGroup>
             </div>
-            
-            <div className="space-y-2">
-              <Label>Availability (select all that apply)</Label>
-              <div className="flex flex-col space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="weekdays" 
-                    checked={availability.includes(Availability.WEEKDAYS)}
-                    onCheckedChange={() => handleAvailabilityChange(Availability.WEEKDAYS)}
-                  />
-                  <Label htmlFor="weekdays">Weekdays</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="weekends" 
-                    checked={availability.includes(Availability.WEEKENDS)}
-                    onCheckedChange={() => handleAvailabilityChange(Availability.WEEKENDS)}
-                  />
-                  <Label htmlFor="weekends">Weekends</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="evenings" 
-                    checked={availability.includes(Availability.EVENINGS)}
-                    onCheckedChange={() => handleAvailabilityChange(Availability.EVENINGS)}
-                  />
-                  <Label htmlFor="evenings">Evenings</Label>
-                </div>
-              </div>
-            </div>
-            
+
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            {success && (
+              <Alert>
+                <AlertDescription>{success}</AlertDescription>
+              </Alert>
+            )}
+
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Creating account..." : "Create player account"}
+              {isLoading ? "Creating account..." : "Create account"}
             </Button>
           </form>
         </CardContent>
-        <CardFooter className="flex justify-center">
-          <div className="text-sm text-muted-foreground">
+        <CardFooter className="text-center">
+          <p className="text-sm text-gray-600">
             Already have an account?{" "}
-            <Link href="/login" className="text-primary hover:underline">
+            <Link href="/login" className="text-blue-600 hover:underline">
               Log in
             </Link>
-          </div>
+          </p>
         </CardFooter>
       </Card>
     </div>
