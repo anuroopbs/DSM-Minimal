@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -9,9 +10,8 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { registerUser } from "@/lib/auth"
-import { SkillLevel, SkillLevelDescriptions } from "@/lib/player-types"
-import Link from "next/link";
-
+import { SkillLevel } from "@/lib/player-types"
+import Link from "next/link"
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -109,26 +109,15 @@ export default function RegisterPage() {
             <div className="space-y-2">
               <Label htmlFor="skill-level">Skill Level</Label>
               <Select value={skillLevel} onValueChange={(value) => setSkillLevel(value as SkillLevel)}>
-                <SelectTrigger className="w-full h-auto py-2">
+                <SelectTrigger>
                   <SelectValue placeholder="Select your skill level" />
                 </SelectTrigger>
-                <SelectContent className="max-h-[300px] overflow-y-auto">
-                  {Object.entries(SkillLevelDescriptions).map(([level, description]) => (
-                    <SelectItem 
-                      key={level} 
-                      value={level}
-                      className="py-3 px-2 cursor-pointer hover:bg-gray-50"
-                    >
-                      <div className="space-y-1">
-                        <div className="font-medium">
-                          {level.replace('_', ' ').toUpperCase()}
-                        </div>
-                        <div className="text-sm text-gray-500 leading-snug">
-                          {description}
-                        </div>
-                      </div>
-                    </SelectItem>
-                  ))}
+                <SelectContent>
+                  <SelectItem value={SkillLevel.DIVISION_1}>Division 1</SelectItem>
+                  <SelectItem value={SkillLevel.DIVISION_2}>Division 2</SelectItem>
+                  <SelectItem value={SkillLevel.DIVISION_3}>Division 3</SelectItem>
+                  <SelectItem value={SkillLevel.DIVISION_4}>Division 4</SelectItem>
+                  <SelectItem value={SkillLevel.DIVISION_5}>Division 5</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -152,6 +141,13 @@ export default function RegisterPage() {
             >
               {isLoading ? "Creating account..." : "Create account"}
             </Button>
+
+            <p className="text-center text-sm text-gray-500">
+              Already have an account?{" "}
+              <Link href="/login" className="text-blue-600 hover:underline">
+                Log in
+              </Link>
+            </p>
           </form>
         </CardContent>
       </Card>
