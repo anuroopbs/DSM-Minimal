@@ -38,6 +38,11 @@ export interface PlayerProfile {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  ranking?: number;
+  points: number;
+  matchesPlayed: number;
+  wins: number;
+  losses: number;
 }
 
 // Match request interface
