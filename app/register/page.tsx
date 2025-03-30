@@ -1,78 +1,49 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { registerUser } from "@/lib/auth"
+import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { SkillLevel, Availability, SkillLevelDescriptions } from "@/lib/player-types"
-import { doc, setDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { registerUser } from "@/lib/auth"
+import { SkillLevel, SkillLevelDescriptions } from "@/lib/player-types"
+import Link from "next/link";
+
 
 export default function RegisterPage() {
-  const [name, setName] = useState("")
+  const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
-  const [skillLevel, setSkillLevel] = useState<SkillLevel>(SkillLevel.DIVISION_6)
-  const [availability, setAvailability] = useState<Availability[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [name, setName] = useState("")
+  const [skillLevel, setSkillLevel] = useState<SkillLevel | "">("")
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
-  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
     setError("")
     setSuccess("")
+    setIsLoading(true)
 
     try {
-      // Validate password match
+      if (!email || !password || !confirmPassword || !name || !skillLevel) {
+        throw new Error("All fields are required")
+      }
+
       if (password !== confirmPassword) {
         throw new Error("Passwords do not match")
       }
 
-      // Register user with Firebase Auth
-      const result = await registerUser(name, email, password)
-
-      if (result.success) {
-        // Create player profile in Firestore
-        try {
-          const userId = result.userId
-
-          if (!userId) {
-            throw new Error("User ID not found")
-          }
-
-          await setDoc(doc(db, "playerProfiles", userId), {
-            userId,
-            name,
-            email,
-            skillLevel,
-            availability,
-            isActive: true,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          })
-
-          setSuccess("Player registered successfully")
-          setTimeout(() => {
-            router.push("/login")
-          }, 2000)
-        } catch (profileError: any) {
-          setError(`Registration successful but failed to create player profile: ${profileError.message}`)
-        }
-      } else {
-        setError(result.message)
-      }
+      await registerUser(email, password, name, skillLevel as SkillLevel)
+      setSuccess("Registration successful! Redirecting to login...")
+      setTimeout(() => router.push("/login"), 2000)
     } catch (err: any) {
-      setError(err.message || "An error occurred during registration")
+      setError(err.message)
     } finally {
       setIsLoading(false)
     }
@@ -91,6 +62,7 @@ export default function RegisterPage() {
               <Label htmlFor="name">Full Name</Label>
               <Input
                 id="name"
+                placeholder="Enter your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -102,6 +74,7 @@ export default function RegisterPage() {
               <Input
                 id="email"
                 type="email"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -120,7 +93,10 @@ export default function RegisterPage() {
               <p className="text-xs text-gray-500 mt-1">
                 Password must be at least 6 characters long and contain only letters and numbers
               </p>
-              <Label htmlFor="confirm-password" className="mt-4">Confirm Password</Label>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirm-password">Confirm Password</Label>
               <Input
                 id="confirm-password"
                 type="password"
@@ -131,17 +107,25 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label>Skill Level</Label>
+              <Label htmlFor="skill-level">Skill Level</Label>
               <Select value={skillLevel} onValueChange={(value) => setSkillLevel(value as SkillLevel)}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full h-auto py-2">
                   <SelectValue placeholder="Select your skill level" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-[300px] overflow-y-auto">
                   {Object.entries(SkillLevelDescriptions).map(([level, description]) => (
-                    <SelectItem key={level} value={level}>
-                      <div className="flex flex-col">
-                        <span className="font-medium">{level.replace('_', ' ').toUpperCase()}</span>
-                        <span className="text-sm text-gray-500">{description}</span>
+                    <SelectItem 
+                      key={level} 
+                      value={level}
+                      className="py-3 px-2 cursor-pointer hover:bg-gray-50"
+                    >
+                      <div className="space-y-1">
+                        <div className="font-medium">
+                          {level.replace('_', ' ').toUpperCase()}
+                        </div>
+                        <div className="text-sm text-gray-500 leading-snug">
+                          {description}
+                        </div>
                       </div>
                     </SelectItem>
                   ))}
@@ -161,19 +145,15 @@ export default function RegisterPage() {
               </Alert>
             )}
 
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isLoading}
+            >
               {isLoading ? "Creating account..." : "Create account"}
             </Button>
           </form>
         </CardContent>
-        <CardFooter className="text-center">
-          <p className="text-sm text-gray-600">
-            Already have an account?{" "}
-            <Link href="/login" className="text-blue-600 hover:underline">
-              Log in
-            </Link>
-          </p>
-        </CardFooter>
       </Card>
     </div>
   )
