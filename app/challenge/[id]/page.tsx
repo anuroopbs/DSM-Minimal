@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -34,14 +33,14 @@ export default function ChallengePage({ params }: { params: { id: string } }) {
       setPlayer(mockPlayer)
       setLoading(false)
     }, 1000)
-    
+
     return () => clearTimeout(timer)
   }, [params.id])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitting(true)
-    
+
     setTimeout(() => {
       setSubmitting(false)
       router.push("/dashboard/ladder?challenge=success")
@@ -62,7 +61,7 @@ export default function ChallengePage({ params }: { params: { id: string } }) {
   return (
     <div className="container py-8">
       <BackButton href="/dashboard/ladder" />
-      
+
       <div className="max-w-2xl mx-auto mt-6">
         <Card>
           <CardHeader>
@@ -85,7 +84,7 @@ export default function ChallengePage({ params }: { params: { id: string } }) {
                 </p>
               </div>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Proposed Dates</label>
@@ -106,7 +105,7 @@ export default function ChallengePage({ params }: { params: { id: string } }) {
                   ))}
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium">Proposed Times</label>
                 <div className="grid grid-cols-3 gap-2">
@@ -123,7 +122,7 @@ export default function ChallengePage({ params }: { params: { id: string } }) {
                   ))}
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label htmlFor="message" className="text-sm font-medium">Message (Optional)</label>
                 <textarea
@@ -134,7 +133,7 @@ export default function ChallengePage({ params }: { params: { id: string } }) {
                   className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm"
                 />
               </div>
-              
+
               <Button type="submit" className="w-full" disabled={!selectedDate || !selectedTime || submitting}>
                 {submitting ? "Sending Challenge..." : "Send Challenge Request"}
               </Button>
