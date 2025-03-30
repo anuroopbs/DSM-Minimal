@@ -1,6 +1,6 @@
 "use client"
 
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth"
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification } from "firebase/auth"
 import { doc, setDoc, getDoc } from "firebase/firestore"
 import { auth, db } from "./firebase"
 import bcrypt from "bcryptjs"
@@ -30,8 +30,10 @@ export async function registerUser(name: string, email: string, password: string
     const userCredential = await createUserWithEmailAndPassword(auth, email, password)
     const user = userCredential.user
     
-    // Send email verification
-    await user.sendEmailVerification()
+    if (user) {
+      // Send email verification
+      await sendEmailVerification(auth.currentUser)
+    }
 
     // Store additional user data in Firestore
     await setDoc(doc(db, "users", user.uid), {
