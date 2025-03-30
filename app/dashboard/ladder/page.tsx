@@ -230,3 +230,67 @@ export default function LadderPage() {
   )
 }
 
+"use client"
+
+import { useState } from "react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { SkillLevel } from "@/lib/player-types"
+
+export default function LadderPage() {
+  const [activeTab, setActiveTab] = useState("mens")
+
+  const mockPlayers = [
+    { id: 1, name: "John Doe", skillLevel: SkillLevel.DIVISION_1, rank: 1 },
+    { id: 2, name: "Jane Smith", skillLevel: SkillLevel.DIVISION_2, rank: 2 },
+    { id: 3, name: "Mike Johnson", skillLevel: SkillLevel.DIVISION_3, rank: 3 },
+  ]
+
+  const renderLadder = (players: typeof mockPlayers) => (
+    <div className="space-y-4">
+      {players.map((player) => (
+        <Card key={player.id} className="hover:bg-gray-50">
+          <CardContent className="flex items-center justify-between p-4">
+            <div className="flex items-center space-x-4">
+              <span className="text-2xl font-bold text-gray-400">#{player.rank}</span>
+              <div>
+                <h3 className="font-semibold">{player.name}</h3>
+                <Badge variant="outline">
+                  {player.skillLevel.replace("_", " ")}
+                </Badge>
+              </div>
+            </div>
+            <Button variant="outline" size="sm">
+              Challenge
+            </Button>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
+
+  return (
+    <div className="container mx-auto p-6">
+      <CardHeader className="text-center mb-6">
+        <CardTitle className="text-3xl">Squash Ladder Rankings</CardTitle>
+      </CardHeader>
+
+      <Tabs defaultValue="mens" className="w-full" onValueChange={setActiveTab}>
+        <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+          <TabsTrigger value="mens">Men's Ladder</TabsTrigger>
+          <TabsTrigger value="womens">Women's Ladder</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="mens">
+          {renderLadder(mockPlayers)}
+        </TabsContent>
+        
+        <TabsContent value="womens">
+          {renderLadder(mockPlayers.slice(1))}
+        </TabsContent>
+      </Tabs>
+    </div>
+  )
+}
