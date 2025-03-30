@@ -1,73 +1,56 @@
+"use client"
+
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 
-// Define skill level type
-export type SkillLevel =
-  | "premier" // Professional-level players
-  | "division1" // Advanced 2
-  | "division2" // Advanced 1
-  | "division3" // Intermediate 2
-  | "division4" // Intermediate 1
-  | "division5" // Beginner 2
-  | "division6" // Beginner 1
-
 interface SkillLevelBadgeProps {
-  skillLevel: SkillLevel
+  skillLevel: string
   small?: boolean
-  showLabel?: boolean
 }
 
-export default function SkillLevelBadge({ skillLevel, small = false, showLabel = false }: SkillLevelBadgeProps) {
-  let badgeVariant: "outline" | "secondary" | "default" | "destructive"
-  let displayText: string
-  let label: string
-
-  switch (skillLevel) {
-    case "premier":
-      badgeVariant = "destructive"
-      displayText = small ? "P" : "Premier"
-      label = "Professional"
-      break
-    case "division1":
-      badgeVariant = "destructive"
-      displayText = small ? "D1" : "Division 1"
-      label = "Advanced 2"
-      break
-    case "division2":
-      badgeVariant = "default"
-      displayText = small ? "D2" : "Division 2"
-      label = "Advanced 1"
-      break
-    case "division3":
-      badgeVariant = "default"
-      displayText = small ? "D3" : "Division 3"
-      label = "Intermediate 2"
-      break
-    case "division4":
-      badgeVariant = "secondary"
-      displayText = small ? "D4" : "Division 4"
-      label = "Intermediate 1"
-      break
-    case "division5":
-      badgeVariant = "secondary"
-      displayText = small ? "D5" : "Division 5"
-      label = "Beginner 2"
-      break
-    case "division6":
-      badgeVariant = "outline"
-      displayText = small ? "D6" : "Division 6"
-      label = "Beginner 1"
-      break
+export function SkillLevelBadge({ skillLevel, small = false }: SkillLevelBadgeProps) {
+  const getSkillLevelColor = (level: string) => {
+    switch (level.toLowerCase()) {
+      case "beginner":
+        return "bg-green-100 text-green-800 hover:bg-green-100/80 dark:bg-green-800/20 dark:text-green-400"
+      case "intermediate":
+        return "bg-blue-100 text-blue-800 hover:bg-blue-100/80 dark:bg-blue-800/20 dark:text-blue-400"
+      case "advanced":
+        return "bg-purple-100 text-purple-800 hover:bg-purple-100/80 dark:bg-purple-800/20 dark:text-purple-400"
+      case "elite":
+        return "bg-red-100 text-red-800 hover:bg-red-100/80 dark:bg-red-800/20 dark:text-red-400"
+      default:
+        return "bg-gray-100 text-gray-800 hover:bg-gray-100/80 dark:bg-gray-800/20 dark:text-gray-400"
+    }
   }
 
-  const className = small ? "text-[10px] px-1 py-0" : "text-xs"
+  const getSkillLevelLabel = (level: string) => {
+    switch (level.toLowerCase()) {
+      case "beginner":
+        return "Beginner"
+      case "intermediate":
+        return "Intermediate"
+      case "advanced":
+        return "Advanced"
+      case "elite":
+        return "Elite"
+      default:
+        return level
+    }
+  }
 
   return (
-    <div className="flex items-center gap-1">
-      <Badge variant={badgeVariant} className={className}>
-        {displayText}
-      </Badge>
-      {showLabel && <span className="text-xs text-muted-foreground">{label}</span>}
-    </div>
+    <Badge
+      variant="outline"
+      className={cn(
+        getSkillLevelColor(skillLevel),
+        "border-transparent",
+        small ? "text-xs px-1.5 py-0" : "text-xs"
+      )}
+    >
+      {getSkillLevelLabel(skillLevel)}
+    </Badge>
   )
 }
 
+export default SkillLevelBadge

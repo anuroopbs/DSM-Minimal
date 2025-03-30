@@ -1,18 +1,14 @@
+
 "use client"
 
-import { useState } from "react"
-import SkillFilter from "./skill-filter"
-import type { SkillLevel } from "./skill-level-badge"
+import { SkillFilter } from "@/components/skill-filter"
 
-export default function SkillFilterWrapper() {
-  const [skillLevel, setSkillLevel] = useState<SkillLevel | null>(null)
-
-  const handleFilterChange = (level: SkillLevel | null) => {
-    setSkillLevel(level)
-    console.log("Filter by skill level:", level)
-    // In a real implementation, you would filter the players array
-  }
-
-  return <SkillFilter onFilterChange={handleFilterChange} />
+export function SkillFilterWrapper() {
+  return (
+    <div className="relative">
+      <SkillFilter />
+    </div>
+  )
 }
 
+export default SkillFilterWrapper
