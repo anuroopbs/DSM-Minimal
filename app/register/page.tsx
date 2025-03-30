@@ -26,6 +26,14 @@ export default function RegisterPage() {
     setIsLoading(true)
     setError("")
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address")
+      setIsLoading(false)
+      return
+    }
+
     try {
       const result = await registerUser(email, password, name, skillLevel)
       if (result.success) {
