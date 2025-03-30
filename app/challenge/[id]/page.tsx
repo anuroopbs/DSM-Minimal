@@ -8,7 +8,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SkillLevelBadge } from "@/components/skill-level-badge"
 import { BackButton } from "@/components/back-button"
 
-export default function ChallengePage({ params }: { params: { id: string } }) {
+interface ChallengePageProps {
+  params: { id: string }
+  searchParams?: { [key: string]: string | string[] | undefined }
+}
+
+export default function ChallengePage({ params }: ChallengePageProps) {
   const router = useRouter()
   const [player, setPlayer] = useState<any>(null)
   const [loading, setLoading] = useState(true)
