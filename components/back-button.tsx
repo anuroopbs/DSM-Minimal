@@ -23,5 +23,3 @@ export function BackButton() {
     </Button>
   )
 }
-
-export default BackButton
