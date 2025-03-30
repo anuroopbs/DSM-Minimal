@@ -1,0 +1,146 @@
+6:56:55 PM: Netlify Build                                                 
+6:56:55 PM: ────────────────────────────────────────────────────────────────
+6:56:55 PM: ​
+6:56:55 PM: ❯ Version
+6:56:55 PM:   @netlify/build 30.0.6
+6:56:55 PM: ​
+6:56:55 PM: ❯ Flags
+6:56:55 PM:   accountId: 67dd51c9eb1c9b05bbcfd9f2
+6:56:55 PM:   baseRelDir: true
+6:56:55 PM:   buildId: 67e9858c04f4210008fbbb85
+6:56:55 PM:   deployId: 67e9858c04f4210008fbbb87
+6:56:55 PM: ​
+6:56:55 PM: ❯ Current directory
+6:56:55 PM:   /opt/build/repo
+6:56:55 PM: ​
+6:56:55 PM: ❯ Config file
+6:56:55 PM:   /opt/build/repo/netlify.toml
+6:56:55 PM: ​
+6:56:55 PM: ❯ Context
+6:56:55 PM:   production
+6:56:55 PM: ​
+6:56:55 PM: ❯ Using Next.js Runtime - v5.10.1
+6:56:55 PM: ​
+6:56:55 PM: ❯ Loading plugins
+6:56:55 PM:    - @netlify/plugin-lighthouse@6.0.1 from Netlify app
+6:56:57 PM: No Next.js cache to restore
+6:56:57 PM: ​
+6:56:57 PM: build.command from netlify.toml                               
+6:56:57 PM: ────────────────────────────────────────────────────────────────
+6:56:57 PM: ​
+6:56:57 PM: $ npm run build
+6:56:57 PM: > my-v0-project@0.1.0 build
+6:56:57 PM: > next build
+6:56:57 PM: ⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+6:56:57 PM:    ▲ Next.js 15.1.0
+6:56:57 PM:    Creating an optimized production build ...
+6:57:05 PM: Failed to compile.
+6:57:05 PM: 
+6:57:05 PM: ./components/ladder-widget.tsx
+6:57:05 PM: Module parse failed: Duplicate export 'LadderWidget' (374:9)
+6:57:05 PM: File was processed with these loaders:
+6:57:05 PM:  * ./node_modules/.pnpm/next@15.1.0_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/next/dist/build/webpack/loaders/next-flight-client-module-loader.js
+6:57:05 PM:  * ./node_modules/.pnpm/next@15.1.0_react-dom@19.1.0_react@19.1.0__react@19.1.0/node_modules/next/dist/build/webpack/loaders/next-swc-loader.js
+6:57:05 PM: You may need an additional loader to handle the result of these loaders.
+6:57:05 PM: | import { LadderWidget as UI_LadderWidget } from "./ui/ladder-widget";
+6:57:05 PM: | export { UI_LadderWidget };
+6:57:05 PM: > export { LadderWidget };
+6:57:05 PM: |
+6:57:05 PM: Import trace for requested module:
+6:57:05 PM: ./components/ladder-widget.tsx
+6:57:05 PM: ./app/dashboard/ladder/page.tsx
+6:57:05 PM: ./app/challenge/[id]/page.tsx
+6:57:05 PM: Error:   x The "use client" directive must be placed before other expressions. Move it to the top of the file to resolve this issue.
+6:57:05 PM:     ,-[/opt/build/repo/app/challenge/[id]/page.tsx:12:1]
+6:57:05 PM:   9 |   ]
+6:57:05 PM:  10 | }
+6:57:05 PM:  11 |
+6:57:05 PM:  12 | "use client"
+6:57:05 PM:     : ^^^^^^^^^^^^
+6:57:05 PM:  13 |
+6:57:05 PM:  14 | import { useState, useEffect } from "react"
+6:57:05 PM:  15 | import { useRouter } from "next/navigation"
+6:57:05 PM:     `----
+  x You're importing a component that needs `useState`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
+  | 
+  |  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  | 
+  | 
+    ,-[/opt/build/repo/app/challenge/[id]/page.tsx:14:1]
+ 11 | 
+ 12 | "use client"
+ 13 | 
+ 14 | import { useState, useEffect } from "react"
+    :          ^^^^^^^^
+ 15 | import { useRouter } from "next/navigation"
+ 16 | import { Button } from "@/components/ui/button"
+ 17 | import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+    `----
+6:57:05 PM:   x You're importing a component that needs `useEffect`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
+  |
+6:57:05 PM:   |  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+6:57:05 PM:   |
+6:57:05 PM:   |
+6:57:05 PM:     ,-[/opt/build/repo/app/challenge/[id]/page.tsx:14:1]
+6:57:05 PM:  11 |
+6:57:05 PM:  12 | "use client"
+6:57:05 PM:  13 |
+6:57:05 PM:  14 | import { useState, useEffect } from "react"
+6:57:05 PM:     :                    ^^^^^^^^^
+6:57:05 PM:  15 | import { useRouter } from "next/navigation"
+6:57:05 PM:  16 | import { Button } from "@/components/ui/button"
+6:57:05 PM:  17 | import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+6:57:05 PM:     `----
+  x You're importing a component that needs `useRouter`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
+  | 
+  |  Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
+  | 
+  | 
+    ,-[/opt/build/repo/app/challenge/[id]/page.tsx:15:1]
+ 12 | "use client"
+ 13 | 
+ 14 | import { useState, useEffect } from "react"
+ 15 | import { useRouter } from "next/navigation"
+    :          ^^^^^^^^^
+ 16 | import { Button } from "@/components/ui/button"
+ 17 | import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+ 18 | import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+    `----
+6:57:05 PM: Import trace for requested module:
+6:57:05 PM: ./app/challenge/[id]/page.tsx
+6:57:05 PM: > Build failed because of webpack errors
+6:57:06 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
+6:57:06 PM: ​
+6:57:06 PM: "build.command" failed                                        
+6:57:06 PM: ────────────────────────────────────────────────────────────────
+6:57:06 PM: ​
+6:57:06 PM:   Error message
+6:57:06 PM:   Command failed with exit code 1: npm run build (https://ntl.fyi/exit-code-1)
+6:57:06 PM: ​
+6:57:06 PM:   Error location
+6:57:06 PM:   In build.command from netlify.toml:
+6:57:06 PM:   npm run build
+6:57:06 PM: ​
+6:57:06 PM:   Resolved config
+6:57:06 PM:   build:
+6:57:06 PM:     command: npm run build
+6:57:06 PM:     commandOrigin: config
+6:57:06 PM:     environment:
+6:57:06 PM:       - NETLIFY_NEXT_PLUGIN_SKIP
+6:57:06 PM:     publish: /opt/build/repo/out
+6:57:06 PM:     publishOrigin: config
+6:57:06 PM:   plugins:
+6:57:06 PM:     - inputs: {}
+6:57:06 PM:       origin: ui
+6:57:06 PM:       package: '@netlify/plugin-lighthouse'
+6:57:06 PM:     - inputs: {}
+6:57:06 PM:       origin: config
+6:57:06 PM:       package: '@netlify/plugin-nextjs'
+6:57:06 PM:   redirects:
+6:57:06 PM:     - from: /*
+      status: 200
+      to: /index.html
+  redirectsOrigin: config
+6:57:06 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+6:57:06 PM: Failing build: Failed to build site
+6:57:06 PM: Finished processing build request in 36.884s
