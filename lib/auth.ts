@@ -29,6 +29,9 @@ export async function registerUser(name: string, email: string, password: string
     // Create user in Firebase Auth
     const userCredential = await createUserWithEmailAndPassword(auth, email, password)
     const user = userCredential.user
+    
+    // Send email verification
+    await user.sendEmailVerification()
 
     // Store additional user data in Firestore
     await setDoc(doc(db, "users", user.uid), {
@@ -55,6 +58,11 @@ export async function loginUser(email: string, password: string) {
     // Sign in with Firebase Auth
     const userCredential = await signInWithEmailAndPassword(auth, email, password)
     const user = userCredential.user
+
+    // Check if email is verified
+    if (!user.emailVerified) {
+      throw new Error("Please verify your email before logging in. Check your inbox for the verification link.")
+    }
 
     // Get user data from Firestore
     const userDoc = await getDoc(doc(db, "users", user.uid))
