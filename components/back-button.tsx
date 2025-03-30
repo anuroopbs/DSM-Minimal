@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft } from "lucide-react"
 
-export function BackButton() {
+export function BackButton({ href = '/' }) {
   const router = useRouter()
   const pathname = usePathname()
   
@@ -16,10 +16,10 @@ export function BackButton() {
     <Button
       variant="ghost"
       className="absolute top-6 left-4 md:left-6"
-      onClick={() => router.push("/")}
+      onClick={() => router.push(href)}
     >
       <ChevronLeft className="h-4 w-4 mr-1" />
-      Home
+      Back
     </Button>
   )
 }

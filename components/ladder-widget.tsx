@@ -261,6 +261,4 @@ export function LadderWidget({
   )
 }
 
-import { LadderWidget as UI_LadderWidget } from "./ui/ladder-widget"
-export { UI_LadderWidget }
 export { LadderWidget }
