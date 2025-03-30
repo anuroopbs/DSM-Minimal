@@ -5,13 +5,13 @@ import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft } from "lucide-react"
 
-export function BackButton({ href = '/' }) {
+export function BackButton({ href = "/" }: { href?: string }) {
   const router = useRouter()
   const pathname = usePathname()
   
   // Don't show back button on home page
   if (pathname === "/") return null
-
+  
   return (
     <Button
       variant="ghost"
