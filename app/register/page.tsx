@@ -19,7 +19,8 @@ export default function RegisterPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [skillLevel, setSkillLevel] = useState<SkillLevel>(SkillLevel.BEGINNER)
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [skillLevel, setSkillLevel] = useState<SkillLevel>(SkillLevel.DIVISION_6)
   const [availability, setAvailability] = useState<Availability[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
@@ -44,6 +45,34 @@ export default function RegisterPage() {
 
     try {
       // Validate inputs
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(email)) {
+        throw new Error("Please enter a valid email address")
+      }
+
+      // Validate password
+      if (password.length < 8) {
+        throw new Error("Password must be at least 8 characters long")
+      }
+      if (!/[A-Z]/.test(password)) {
+        throw new Error("Password must contain at least one uppercase letter")
+      }
+      if (!/[a-z]/.test(password)) {
+        throw new Error("Password must contain at least one lowercase letter")
+      }
+      if (!/[0-9]/.test(password)) {
+        throw new Error("Password must contain at least one number")
+      }
+      if (!/[!@#$%^&*]/.test(password)) {
+        throw new Error("Password must contain at least one special character (!@#$%^&*)")
+      }
+
+      // Validate password confirmation
+      if (password !== confirmPassword) {
+        throw new Error("Passwords do not match")
+      }
+
       if (availability.length === 0) {
         throw new Error("Please select at least one availability option")
       }
@@ -133,7 +162,18 @@ export default function RegisterPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <p className="text-xs text-gray-500">Password must be at least 6 characters</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Password must contain at least 8 characters, including uppercase, lowercase, 
+                number, and special character (!@#$%^&*)
+              </p>
+              <Label htmlFor="confirm-password" className="mt-4">Confirm Password</Label>
+              <Input
+                id="confirm-password"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
             </div>
             
             <div className="space-y-2">
@@ -141,20 +181,19 @@ export default function RegisterPage() {
               <RadioGroup 
                 value={skillLevel} 
                 onValueChange={(value) => setSkillLevel(value as SkillLevel)}
-                className="flex flex-col space-y-1"
+                className="flex flex-col space-y-3"
               >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value={SkillLevel.BEGINNER} id="beginner" />
-                  <Label htmlFor="beginner">Beginner</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value={SkillLevel.INTERMEDIATE} id="intermediate" />
-                  <Label htmlFor="intermediate">Intermediate</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value={SkillLevel.ADVANCED} id="advanced" />
-                  <Label htmlFor="advanced">Advanced</Label>
-                </div>
+                {Object.entries(SkillLevelDescriptions).map(([level, description]) => (
+                  <div key={level} className="flex items-start space-x-2 p-2 rounded hover:bg-gray-50">
+                    <RadioGroupItem value={level} id={level} />
+                    <div>
+                      <Label htmlFor={level} className="font-medium">
+                        {level.replace('_', ' ').toUpperCase()}
+                      </Label>
+                      <p className="text-sm text-gray-600 mt-1">{description}</p>
+                    </div>
+                  </div>
+                ))}
               </RadioGroup>
             </div>
             
