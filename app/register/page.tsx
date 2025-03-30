@@ -1,49 +1,40 @@
-
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { registerUser } from "@/lib/auth"
 import { SkillLevel } from "@/lib/player-types"
-import Link from "next/link"
 
 export default function RegisterPage() {
-  const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
   const [name, setName] = useState("")
-  const [skillLevel, setSkillLevel] = useState<SkillLevel | "">("")
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
+  const [skillLevel, setSkillLevel] = useState<SkillLevel>(SkillLevel.DIVISION_3)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
-    setSuccess("")
     setIsLoading(true)
+    setError("")
 
     try {
-      if (!email || !password || !confirmPassword || !name || !skillLevel) {
-        throw new Error("All fields are required")
+      const result = await registerUser(email, password, name, skillLevel)
+      if (result.success) {
+        router.push("/dashboard")
+      } else {
+        setError(result.message)
       }
-
-      if (password !== confirmPassword) {
-        throw new Error("Passwords do not match")
-      }
-
-      await registerUser(email, password, name, skillLevel as SkillLevel)
-      setSuccess("Registration successful! Redirecting to login...")
-      setTimeout(() => router.push("/login"), 2000)
     } catch (err: any) {
-      setError(err.message)
+      setError(err.message || "An error occurred during registration")
     } finally {
       setIsLoading(false)
     }
@@ -58,8 +49,13 @@ export default function RegisterPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">Name</Label>
               <Input
                 id="name"
                 placeholder="Enter your name"
@@ -68,7 +64,6 @@ export default function RegisterPage() {
                 required
               />
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -80,32 +75,17 @@ export default function RegisterPage() {
                 required
               />
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Password must be at least 6 characters long and contain only letters and numbers
-              </p>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="confirm-password">Confirm Password</Label>
-              <Input
-                id="confirm-password"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
-
             <div className="space-y-2">
               <Label htmlFor="skill-level">Skill Level</Label>
               <Select value={skillLevel} onValueChange={(value) => setSkillLevel(value as SkillLevel)}>
@@ -121,19 +101,6 @@ export default function RegisterPage() {
                 </SelectContent>
               </Select>
             </div>
-
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
-            {success && (
-              <Alert>
-                <AlertDescription>{success}</AlertDescription>
-              </Alert>
-            )}
-
             <Button
               type="submit"
               className="w-full"
@@ -141,7 +108,6 @@ export default function RegisterPage() {
             >
               {isLoading ? "Creating account..." : "Create account"}
             </Button>
-
             <p className="text-center text-sm text-gray-500">
               Already have an account?{" "}
               <Link href="/login" className="text-blue-600 hover:underline">
