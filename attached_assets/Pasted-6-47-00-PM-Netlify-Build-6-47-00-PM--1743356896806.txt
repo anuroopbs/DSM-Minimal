@@ -1,0 +1,126 @@
+6:47:00 PM: Netlify Build                                                 
+6:47:00 PM: ────────────────────────────────────────────────────────────────
+6:47:00 PM: ​
+6:47:00 PM: ❯ Version
+6:47:00 PM:   @netlify/build 30.0.6
+6:47:00 PM: ​
+6:47:00 PM: ❯ Flags
+6:47:00 PM:   accountId: 67dd51c9eb1c9b05bbcfd9f2
+6:47:00 PM:   baseRelDir: true
+6:47:00 PM:   buildId: 67e98362e03cdd0008fd6f9e
+6:47:00 PM:   deployId: 67e98362e03cdd0008fd6fa0
+6:47:00 PM: ​
+6:47:00 PM: ❯ Current directory
+6:47:00 PM:   /opt/build/repo
+6:47:00 PM: ​
+6:47:00 PM: ❯ Config file
+6:47:00 PM:   /opt/build/repo/netlify.toml
+6:47:00 PM: ​
+6:47:00 PM: ❯ Context
+6:47:00 PM:   production
+6:47:00 PM: ​
+6:47:00 PM: ❯ Using Next.js Runtime - v5.10.1
+6:47:00 PM: ​
+6:47:00 PM: ❯ Loading plugins
+6:47:00 PM:    - @netlify/plugin-lighthouse@6.0.1 from Netlify app
+6:47:03 PM: Next.js cache restored
+6:47:03 PM: ​
+6:47:03 PM: build.command from netlify.toml                               
+6:47:03 PM: ────────────────────────────────────────────────────────────────
+6:47:03 PM: ​
+6:47:03 PM: $ npm run build
+6:47:03 PM: > my-v0-project@0.1.0 build
+6:47:03 PM: > next build
+6:47:03 PM:    ▲ Next.js 15.1.0
+6:47:03 PM:    - Experiments (use with caution):
+6:47:03 PM:      · webpackBuildWorker
+6:47:03 PM:      · parallelServerCompiles
+6:47:03 PM:      · parallelServerBuildTraces
+6:47:03 PM:    Creating an optimized production build ...
+6:47:07 PM:  ⚠ Compiled with warnings
+6:47:07 PM: ./app/challenge/[id]/page.tsx
+6:47:07 PM: Attempted import error: 'SkillLevelBadge' is not exported from '@/components/skill-level-badge' (imported as 'SkillLevelBadge').
+6:47:07 PM: Import trace for requested module:
+6:47:07 PM: ./app/challenge/[id]/page.tsx
+6:47:07 PM: ./app/dashboard/ladder/page.tsx
+6:47:07 PM: Attempted import error: 'PlayerRegistrationForm' is not exported from '@/components/player-registration-form' (imported as 'PlayerRegistrationForm').
+6:47:07 PM: Import trace for requested module:
+6:47:07 PM: ./app/dashboard/ladder/page.tsx
+6:47:07 PM: ./app/dashboard/ladder/page.tsx
+6:47:07 PM: Attempted import error: 'SkillFilterWrapper' is not exported from '@/components/skill-filter-wrapper' (imported as 'SkillFilterWrapper').
+6:47:07 PM: Import trace for requested module:
+6:47:07 PM: ./app/dashboard/ladder/page.tsx
+6:47:07 PM: ./app/dashboard/ladder/page.tsx
+6:47:07 PM: Attempted import error: 'LadderWidget' is not exported from '@/components/ladder-widget' (imported as 'LadderWidget').
+6:47:07 PM: Import trace for requested module:
+6:47:07 PM: ./app/dashboard/ladder/page.tsx
+6:47:07 PM: ./app/dashboard/ladder/page.tsx
+6:47:07 PM: Attempted import error: 'LadderWidget' is not exported from '@/components/ladder-widget' (imported as 'LadderWidget').
+6:47:07 PM: Import trace for requested module:
+6:47:07 PM: ./app/dashboard/ladder/page.tsx
+6:47:07 PM: ./app/challenge/[id]/loading.tsx
+6:47:07 PM: Attempted import error: '@/components/back-button' does not contain a default export (imported as 'BackButton').
+6:47:07 PM: Import trace for requested module:
+6:47:07 PM: ./app/challenge/[id]/loading.tsx
+6:47:14 PM:  ⚠ Compiled with warnings
+6:47:14 PM: ./app/challenge/[id]/page.tsx
+6:47:14 PM: Attempted import error: 'SkillLevelBadge' is not exported from '@/components/skill-level-badge' (imported as 'SkillLevelBadge').
+6:47:14 PM: Import trace for requested module:
+6:47:14 PM: ./app/challenge/[id]/page.tsx
+6:47:14 PM: ./app/dashboard/ladder/page.tsx
+6:47:14 PM: Attempted import error: 'PlayerRegistrationForm' is not exported from '@/components/player-registration-form' (imported as 'PlayerRegistrationForm').
+6:47:14 PM: Import trace for requested module:
+6:47:14 PM: ./app/dashboard/ladder/page.tsx
+6:47:14 PM: ./app/dashboard/ladder/page.tsx
+6:47:14 PM: Attempted import error: 'SkillFilterWrapper' is not exported from '@/components/skill-filter-wrapper' (imported as 'SkillFilterWrapper').
+6:47:14 PM: Import trace for requested module:
+6:47:14 PM: ./app/dashboard/ladder/page.tsx
+6:47:14 PM: ./app/dashboard/ladder/page.tsx
+6:47:14 PM: Attempted import error: 'LadderWidget' is not exported from '@/components/ladder-widget' (imported as 'LadderWidget').
+6:47:14 PM: Import trace for requested module:
+6:47:14 PM: ./app/dashboard/ladder/page.tsx
+6:47:14 PM: ./app/dashboard/ladder/page.tsx
+6:47:17 PM: Failed during stage 'building site': Build script returned non-zero exit code: 2 (https://ntl.fyi/exit-code-2)
+6:47:14 PM: Attempted import error: 'LadderWidget' is not exported from '@/components/ladder-widget' (imported as 'LadderWidget').
+6:47:14 PM: Import trace for requested module:
+6:47:14 PM: ./app/dashboard/ladder/page.tsx
+6:47:14 PM:  ✓ Compiled successfully
+6:47:14 PM:    Skipping validation of types
+6:47:14 PM:    Skipping linting
+6:47:14 PM:    Collecting page data ...
+6:47:16 PM: > Build error occurred
+6:47:16 PM: [Error: Page "/challenge/[id]" is missing "generateStaticParams()" so it cannot be used with "output: export" config.]
+6:47:16 PM: ​
+6:47:16 PM: "build.command" failed                                        
+6:47:16 PM: ────────────────────────────────────────────────────────────────
+6:47:16 PM: ​
+6:47:16 PM:   Error message
+6:47:16 PM:   Command failed with exit code 1: npm run build (https://ntl.fyi/exit-code-1)
+6:47:16 PM: ​
+6:47:16 PM:   Error location
+6:47:16 PM:   In build.command from netlify.toml:
+6:47:16 PM:   npm run build
+6:47:16 PM: ​
+6:47:16 PM:   Resolved config
+6:47:16 PM:   build:
+6:47:16 PM:     command: npm run build
+6:47:16 PM:     commandOrigin: config
+6:47:16 PM:     environment:
+6:47:16 PM:       - NETLIFY_NEXT_PLUGIN_SKIP
+6:47:16 PM:     publish: /opt/build/repo/.next
+6:47:16 PM:     publishOrigin: config
+6:47:16 PM:   plugins:
+6:47:16 PM:     - inputs: {}
+6:47:16 PM:       origin: ui
+6:47:16 PM:       package: '@netlify/plugin-lighthouse'
+6:47:16 PM:     - inputs: {}
+6:47:16 PM:       origin: config
+6:47:16 PM:       package: '@netlify/plugin-nextjs'
+6:47:16 PM:   redirects:
+6:47:17 PM:     - from: /*
+      status: 200
+      to: /index.html
+  redirectsOrigin: config
+6:47:17 PM: Build failed due to a user error: Build script returned non-zero exit code: 2
+6:47:17 PM: Failing build: Failed to build site
+6:47:17 PM: Finished processing build request in 53.347s
