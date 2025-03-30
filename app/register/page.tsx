@@ -11,7 +11,7 @@ import { registerUser } from "@/lib/auth"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { SkillLevel, Availability } from "@/lib/player-types"
+import { SkillLevel, Availability, SkillLevelDescriptions } from "@/lib/player-types"
 import { doc, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 
