@@ -19,8 +19,8 @@ export async function registerUser(name: string, email: string, password: string
       throw new Error("All fields are required")
     }
 
-    if (password.length < 6) {
-      throw new Error("Password must be at least 6 characters")
+    if (password.length < 6 || !/^[a-zA-Z0-9]{6,}$/.test(password)) {
+      throw new Error("Password must be at least 6 characters long and contain only letters and numbers")
     }
 
     // Hash the password

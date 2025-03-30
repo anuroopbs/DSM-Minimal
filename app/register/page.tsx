@@ -118,8 +118,7 @@ export default function RegisterPage() {
                 required
               />
               <p className="text-xs text-gray-500 mt-1">
-                Password must contain at least 8 characters, including uppercase, lowercase, 
-                number, and special character (!@#$%^&*)
+                Password must be at least 6 characters long and contain only letters and numbers
               </p>
               <Label htmlFor="confirm-password" className="mt-4">Confirm Password</Label>
               <Input
